@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,6 +17,12 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+
+        $supportPin = rand(10000000, 99999999);
+        while (Customer::where('support_pin', $supportPin)->exists()) {
+            $supportPin = rand(10000000, 99999999);
+        }
+
         return [
             //Create a random customer
             'name' => $this->faker->name(),
@@ -24,7 +31,8 @@ class CustomerFactory extends Factory
             'vat_number' => $this->faker->randomNumber(9),
             'address' => $this->faker->address(),
             'siret' => $this->faker->randomNumber(9),
-            'legal_status' => $this->faker->randomElement(['SARL', 'EURL', 'SAS', 'SASU'])
+            'legal_status' => $this->faker->randomElement(['SARL', 'EURL', 'SAS', 'SASU']),
+            'support_pin' => $supportPin
         ];
     }
 }

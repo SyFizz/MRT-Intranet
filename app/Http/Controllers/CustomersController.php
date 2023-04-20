@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Invoice;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
@@ -53,7 +54,7 @@ class CustomersController extends Controller
             'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
             'email' => 'required|email',
             'address' => 'required|min:3|max:255|regex:/^[a-zA-Z0-9éèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\'\-,\s]+$/',
-            'phone' => 'rrequired|phone:FR,INTERNATIONAL',
+            'phone' => 'required|phone:FR,INTERNATIONAL',
             'vat_number' => 'nullable|min:13|max:13|regex:/^[a-zA-Z]{2}[0-9]{11}$/',
             'siret' => 'nullable|min:14|max:14|regex:/^[0-9]{14}$/',
             'legal_status' => 'required|min:2|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
@@ -78,6 +79,12 @@ class CustomersController extends Controller
 
     public function store(): RedirectResponse
     {
+        //Make the support pin a 8 digit unique random number
+        $supportPin = rand(10000000, 99999999);
+        while (Customer::where('support_pin', $supportPin)->exists()) {
+            $supportPin = rand(10000000, 99999999);
+        }
+
         $validated = request()->validate([
             'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
             'email' => 'required|email',
@@ -87,7 +94,19 @@ class CustomersController extends Controller
             'siret' => 'nullable|min:14|max:14|regex:/^[0-9]{14}$/',
             'legal_status' => 'required|min:2|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
         ]);
-        $customer = Customer::create($validated);
+
+        $customer = new Customer();
+        $customer->name = $validated['name'];
+        $customer->email = $validated['email'];
+        $customer->phone = $validated['phone'];
+        $customer->address = $validated['address'];
+        $customer->legal_status = $validated['legal_status'];
+        $customer->siret = $validated['siret'];
+        $customer->vat_number = $validated['vat_number'];
+        $customer->support_pin = $supportPin;
+        $customer->save();
+
+
         return redirect()->route('customers.show', $customer->id)->with('success', 'Le client n°' . $customer->id . ' a bien été créé.');
     }
 

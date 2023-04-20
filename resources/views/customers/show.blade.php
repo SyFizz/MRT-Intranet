@@ -48,13 +48,20 @@
                     <p class="text-gray-700 text-lg">
                         <b>Adresse postale </b> :  {{ $customer->address }}
                     </p>
-                    <p class="text-gray-700 text-base">
-                        <b>Numéro SIRET </b>: {{ $customer->siret ?: 'Non applicable/Non renseigné' }}
+                    <p class="text-gray-700 text-lg">
+                        <b>PIN Support</b> : {{ $customer->support_pin }}
                     </p>
-                    <p class="text-gray-700 text-base">
-                        <b>Numéro TVA</b> : {{ $customer->vat_number ?: 'Non applicable/Non renseigné' }}
-                    </p>
-                    <p class="text-gray-700 text-base">
+                    @if($customer->siret !== null)
+                        <p class="text-gray-700 text-lg">
+                            <b>Numéro SIRET </b>: {{ $customer->siret ?: 'Non applicable/Non renseigné' }}
+                        </p>
+                    @endif
+                    @if($customer->vat_number !== null)
+                        <p class="text-gray-700 text-lg">
+                            <b>Numéro TVA</b> : {{ $customer->vat_number ?: 'Non applicable/Non renseigné' }}
+                        </p>
+                    @endif
+                    <p class="text-gray-700 text-lg">
                         <b>Forme juridique</b>
                         : {{ $customer->legal_status ?: 'Non applicable/Non renseigné' }}
                     </p>
