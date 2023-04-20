@@ -40,6 +40,7 @@ class InvoiceController extends Controller
         $invoice = new Invoice();
         $invoice->filePath = $storedPath;
         $invoice->customer_id = $request->customer_id;
+        $invoice->filename = $request->filename;
         $invoice->save();
 
         return redirect()->route('customers.show', $request->customer_id);
