@@ -81,7 +81,7 @@
                 <div class="px-6 pt-4 pb-2 justify-center align-middle justify-items-center text-center">
                     @foreach($customer->invoices as $invoice)
                         <a href='{{ route('invoice.show', ['id' => $invoice->id]) }}'
-                           class="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 w-full">Facture n°{{ $invoice->id }} - {{ $invoice->created_at->format('d/m/Y à H:i') }}
+                           class="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 w-full">Facture "{{ $invoice->filename }}" - {{ $invoice->created_at->format('d/m/Y à H:i') }}
                         </a>
                     @endforeach
                     <a href='{{ route('customers.add-invoice', ['id' => $customer->id]) }}'
