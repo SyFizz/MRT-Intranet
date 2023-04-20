@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->longText('support_pin');
+            $table->longText('support_pin')->default("00000000");
         });
     }
 
