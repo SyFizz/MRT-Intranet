@@ -16,11 +16,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Tableau de bord') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('customers')" :active="request()->routeIs('customers')">
+                    <x-nav-link :href="route('customers')" :active="str_contains(request()->fullUrl(), '/customers')">
                         {{ __('Clients') }}
                     </x-nav-link>
                     <x-nav-link :href="route('email-sender')" :active="request()->routeIs('email-sender')">
                         {{ __('Messagerie') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('settings')" :active="str_contains(request()->fullUrl(), '/settings')">
+                        {{ __('Paramètres & Administration') }}
                     </x-nav-link>
                 </div>
             </div>

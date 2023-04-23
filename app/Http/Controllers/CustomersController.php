@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerUpdateRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
@@ -47,18 +48,10 @@ class CustomersController extends Controller
         return view('customers.edit')->with('customer', Customer::all()->find($id));
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(CustomerUpdateRequest $request, int $id): RedirectResponse
     {
 
-        $validated = $request->validate([
-            'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
-            'email' => 'required|email',
-            'address' => 'required|min:3|max:255|regex:/^[a-zA-Z0-9éèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\'\-,\s]+$/',
-            'phone' => 'required|phone:FR,INTERNATIONAL',
-            'vat_number' => 'nullable|min:13|max:13|regex:/^[a-zA-Z]{2}[0-9]{11}$/',
-            'siret' => 'nullable|min:14|max:14|regex:/^[0-9]{14}$/',
-            'legal_status' => 'required|min:2|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
-        ]);
+        $validated = $request->validated();
 
         $customer = Customer::all()->find($id);
         $customer->name = $validated['name'];
@@ -77,7 +70,7 @@ class CustomersController extends Controller
         return view('customers.create');
     }
 
-    public function store(): RedirectResponse
+    public function store(CustomerUpdateRequest $request): RedirectResponse
     {
         //Make the support pin a 8 digit unique random number
         $supportPin = rand(10000000, 99999999);
@@ -85,15 +78,7 @@ class CustomersController extends Controller
             $supportPin = rand(10000000, 99999999);
         }
 
-        $validated = request()->validate([
-            'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
-            'email' => 'required|email',
-            'address' => 'required|min:3|max:255|regex:/^[a-zA-Z0-9éèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\'\-,\s]+$/',
-            'phone' => 'required|phone:FR,INTERNATIONAL',
-            'vat_number' => 'nullable|min:13|max:13|regex:/^[a-zA-Z]{2}[0-9]{11}$/',
-            'siret' => 'nullable|min:14|max:14|regex:/^[0-9]{14}$/',
-            'legal_status' => 'required|min:2|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
-        ]);
+        $validated = $request->validated();
 
         $customer = new Customer();
         $customer->name = $validated['name'];

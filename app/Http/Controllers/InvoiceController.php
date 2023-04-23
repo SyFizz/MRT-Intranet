@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InvoiceUploadRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
@@ -22,11 +23,7 @@ class InvoiceController extends Controller
         return view('invoices.add', compact('customer'));
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'file' => 'required|file|mimes:pdf|max:2048',
-            'filename' => 'required|string|max:255',
-        ]);
+    public function store(InvoiceUploadRequest $request){
 
         $requestedFileName = $request->filename;
         $requestedFileName = preg_replace('/[^A-Za-z0-9\-]/', '_', $requestedFileName);

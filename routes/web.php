@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,23 +24,45 @@ Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'ver
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::get('/customers/create', [CustomersController::class, 'create'])->middleware(['auth', 'verified'])->name('customers.create');
-Route::post('/customers/create', [CustomersController::class, 'store'])->middleware(['auth', 'verified'])->name('customer.store');
-Route::get('/customers', [CustomersController::class, 'index'])->middleware(['auth', 'verified'])->name('customers');
-Route::get('/customers/search', [CustomersController::class, 'search'])->middleware(['auth', 'verified'])->name('customers.search');
-Route::get('/customers/{id}', [CustomersController::class, 'show'])->middleware(['auth', 'verified'])->name('customers.show');
-Route::get('/customers/{id}/edit', [CustomersController::class, 'edit'])->middleware(['auth', 'verified'])->name('customers.edit');
-Route::patch('/customers/{id}', [CustomersController::class, 'update'])->middleware(['auth', 'verified'])->name('customer.update');
-Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->middleware(['auth', 'verified'])->name('customer.destroy');
+Route::prefix('customers')->middleware(['auth', 'verified'])->controller(CustomersController::class)->group(function () {
+    Route::get('/', 'index')->name('customers');
+    Route::get('/search', 'search')->name('customers.search');
+    Route::get('/create', 'create')->name('customers.create');
+    Route::post('/create', 'store')->name('customer.store');
+    Route::get('/{id}', 'show')->name('customers.show');
+    Route::get('/{id}/edit', 'edit')->name('customers.edit');
+    Route::patch('/{id}', 'update')->name('customer.update');
+    Route::delete('/{id}', 'destroy')->name('customer.destroy');
+});
+
+
 Route::post('/customers/{id}/add-invoice', [InvoiceController::class, 'store'])->middleware(['auth', 'verified'])->name('invoice.store');
-
-
 Route::get('/customers/{id}/add-invoice', [InvoiceController::class, 'upload'])->middleware(['auth', 'verified'])->name('customers.add-invoice');
 
-Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->middleware(['auth', 'verified'])->name('invoice.show');
-Route::get('/invoice/{id}/download', [InvoiceController::class, 'download'])->middleware(['auth', 'verified'])->name('invoice.download');
-Route::delete('/invoice/{id}', [InvoiceController::class, 'destroy'])->middleware(['auth', 'verified'])->name('invoice.destroy');
+Route::prefix('invoice')->middleware(['auth', 'verified'])->controller(InvoiceController::class)->group(function () {
+    Route::get('{id}', 'show')->name('invoice.show');
+    Route::get('{id}/download', 'download')->name('invoice.download');
+    Route::delete('{id}', 'destroy')->name('invoice.destroy');
+});
 
+
+//Group all settings routes
+Route::prefix('settings')->middleware(['auth', 'verified'])->controller(SettingsController::class)->group(function () {
+
+    Route::get('/', 'index')->name('settings');
+
+    Route::prefix('users')->group(function () {
+        Route::get('/', 'usersIndex')->name('settings.users');
+        Route::get('/search', 'usersSearch')->name('settings.users.search');
+        Route::get('/create', 'usersCreate')->name('settings.users.create');
+        Route::post('/create', 'usersStore')->name('settings.users.store');
+        Route::get('/{id}/edit', 'usersEdit')->name('settings.users.edit');
+        Route::patch('/{id}', 'usersUpdate')->name('settings.users.update');
+        Route::delete('/{id}', 'usersDestroy')->name('settings.users.destroy');
+        Route::patch('/{id}/password', 'usersResetPassword')->name('settings.users.resetPassword');
+    });
+
+});
 
 Route::get('/email-sender', function () {
     return view('email-sender');
