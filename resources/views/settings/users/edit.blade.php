@@ -64,7 +64,7 @@
                                         <option value="Oui">Oui</option>
                                     </select>
                                     <script>
-                                        document.getElementById('isAdmin').value = '{{ old('isAdmin', 'Non') }}';
+                                        document.getElementById('isAdmin').value = '{{ old('isAdmin', $user->isAdmin ? 'Oui' : 'Non') }}';
                                     </script>
                                     @error('isAdmin')
                                     @svg('carbon-warning', 'w-7 h-7 align-middle mt-2.5 mx-2 text-red-500')
