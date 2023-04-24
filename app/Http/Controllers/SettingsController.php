@@ -15,11 +15,18 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        return view('settings.index');
+        if(!auth()->user()->isAdmin) {
+            return to_route('dashboard')->with('error', 'Vous n\'avez pas accès à cette page');
+        } else {
+            return view('settings.index');
+        }
     }
 
     public function usersIndex()
     {
+        if(!auth()->user()->isAdmin) {
+            return to_route('dashboard')->with('error', 'Vous n\'avez pas accès à cette page');
+        }
         $users = User::orderBy('name')->paginate(50);
         return view('settings.users.index')->with('users', $users);
     }
@@ -46,6 +53,10 @@ class SettingsController extends Controller
         $user->name = $request->validated()['name'];
         $user->email = $request->validated()['email'];
         $user->password = Hash::make($request->validated()['password']);
+        if($request->validated()['isAdmin'] == 'Oui')
+            $user->isAdmin = true;
+        else
+            $user->isAdmin = false;
         $user->save();
 
         return to_route('settings.users')->with('success', 'Utilisateur ' . $user->name . ' créé avec succès');
@@ -62,6 +73,10 @@ class SettingsController extends Controller
         $user = User::find($id);
         $user->name = $request->validated()['name'];
         $user->email = $request->validated()['email'];
+        if($request->validated()['isAdmin'] == 'Oui')
+            $user->isAdmin = true;
+        else
+            $user->isAdmin = false;
         $user->save();
         return to_route('settings.users')->with('success', 'Utilisateur ' . $user->name . ' modifié avec succès');
     }

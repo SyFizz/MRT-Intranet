@@ -56,6 +56,26 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('email')" />
                             </div>
 
+                            <div>
+                                <x-input-label for="isAdmin" :value="__('L\'utilisateur est-il un administrateur ?')" />
+                                <div class="flex align-middle">
+                                    <select id="isAdmin" name="isAdmin" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                        <option value="Non">Non</option>
+                                        <option value="Oui">Oui</option>
+                                    </select>
+                                    <script>
+                                        document.getElementById('isAdmin').value = '{{ old('isAdmin', 'Non') }}';
+                                    </script>
+                                    @error('isAdmin')
+                                    @svg('carbon-warning', 'w-7 h-7 align-middle mt-2.5 mx-2 text-red-500')
+                                    <script>
+                                        document.getElementById('isAdmin').classList.add('border-red-500');
+                                    </script>
+                                    @enderror
+                                </div>
+                                <x-input-error class="mt-2" :messages="$errors->get('isAdmin')" />
+                            </div>
+
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Sauvegarder') }}</x-primary-button>
                             </div>

@@ -50,7 +50,6 @@
                 <table class="table-auto w-full">
                     <thead>
                     <tr>
-                        <th class="px-4 py-2 w-15">ID</th>
                         <th class="px-4 py-2 w-80">Nom</th>
                         <th class="px-4 py-2 w-80">Email</th>
                         <th class="px-4 py-2 w-80">Créé le</th>
@@ -59,8 +58,11 @@
                     </thead>
                     <tbody>
                     @foreach($users as $user)
+                        @if($user->isAdmin === 1)
+                            <tr class="align-middle justify-items-center justify-center align bg-blue-50">
+                        @else
                         <tr class="align-middle justify-items-center justify-center align">
-                            <td class="border px-4 py-2">{{ $user->id }}</td>
+                        @endif
                             <td class="border px-4 py-2">{{ $user->name }}</td>
                             <td class="border px-4 py-2">{{ $user->email }}</td>
                             <td class="border px-4 py-2">{{ $user->created_at->format('d/m/Y à H:i') }}</td>

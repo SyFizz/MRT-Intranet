@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UserUpdateRequest extends FormRequest
+class UserCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +23,9 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => ['required','string','email','max:255',Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'passwordConfirm' => 'required|string|same:password',
             'isAdmin' => 'required|max:3|min:3|in:Oui,Non',
         ];
     }
@@ -41,6 +41,12 @@ class UserUpdateRequest extends FormRequest
             'email.email' => 'L\'adresse email doit être une adresse e-mail valide',
             'email.max' => 'L\'adresse email ne doit pas dépasser 255 caractères',
             'email.unique' => 'L\'adresse email est déjà utilisée',
+            'password.required' => 'Le mot de passe est requis',
+            'password.string' => 'Le mot de passe doit être composé de caractères alphanumériques',
+            'password.min' => 'Le mot de passe doit faire au moins 8 caractères',
+            'passwordConfirm.required' => 'La confirmation du mot de passe est requise',
+            'passwordConfirm.string' => 'Le mot de passe doit être composé de caratères alphanumériques',
+            'passwordConfirm.same' => 'Les mots de passe doivent être identiques',
             'isAdmin.required' => 'Vous devez préciser si l\'utilisateur est administrateur ou non',
             'isAdmin.max' => 'Vous devez préciser si l\'utilisateur est administrateur ou non',
             'isAdmin.min' => 'Vous devez préciser si l\'utilisateur est administrateur ou non',

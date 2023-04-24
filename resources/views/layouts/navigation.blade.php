@@ -45,7 +45,8 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('profile.edit')" class="flex">
+                            @svg('carbon-user', 'h-4 w-4 mr-1')
                             {{ __('Profil') }}
                         </x-dropdown-link>
 
@@ -55,7 +56,8 @@
 
                             <x-dropdown-link :href="route('logout')"
                                              onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                                this.closest('form').submit();" class="flex">
+                                @svg('carbon-logout', 'h-4 w-4 mr-1')
                                 {{ __('Se déconnecter') }}
                             </x-dropdown-link>
                         </form>
