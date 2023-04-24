@@ -12,7 +12,7 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBDILYHSKVyFrSYuy17v2ONnu1KlQNFOA&libraries=places&callback=initAutocomplete" async></script>
     <form method="post" action="{{ route('customer.store') }}" class="mt-6 space-y-6">
         @csrf
         <div>
@@ -46,7 +46,7 @@
         <div>
             <x-input-label for="address" :value="__('Adresse postale')" />
             <div class="flex align-middle">
-                <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address')" autocomplete="address" />
+                <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address')" autocomplete="off" />
                 @error('address')
                 @svg('carbon-warning', 'w-7 h-7 align-middle mt-2.5 mx-2 text-red-500')
                 <script>
@@ -56,7 +56,27 @@
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
+        <script>
+            let autocomplete;
 
+            /* ------------------------- Initialize Autocomplete ------------------------ */
+            function initAutocomplete() {
+                const input = document.getElementById("address");
+                const options = {
+                    componentRestrictions: { country: "FR" }
+                }
+                autocomplete = new google.maps.places.Autocomplete(input, options);
+                autocomplete.addListener("place_changed", onPlaceChange)
+            }
+
+            /* --------------------------- Handle Place Change -------------------------- */
+            function onPlaceChange() {
+                const place = autocomplete.getPlace();
+                console.log(place.formatted_address)
+                console.log(place.geometry.location.lat())
+                console.log(place.geometry.location.lng())
+            }
+        </script>
         <div>
             <x-input-label for="phone" :value="__('Téléphone')" />
             <div class="flex align-middle">
