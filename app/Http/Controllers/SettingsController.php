@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSettingsRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Setting;
 use App\Models\User;
 use Faker\Factory;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,6 +18,17 @@ class SettingsController extends Controller
     public function index()
     {
         return view('settings.index');
+    }
+
+    public function storeSettings(StoreSettingsRequest $request)
+    {
+        $settings = $request->validated();
+        foreach ($settings as $key => $value) {
+            $setting = Setting::where('name', $key)->first();
+            $setting->value = $value;
+            $setting->save();
+        }
+        return to_route('settings')->with('admin_success', 'Paramètres sauvegardés avec succès');
     }
 
     public function usersIndex()

@@ -51,6 +51,7 @@ Route::prefix('invoice')->middleware(['auth', 'verified'])->controller(InvoiceCo
 Route::middleware(['auth', 'verified', 'auth.admin'])->prefix('settings')->controller(SettingsController::class)->group(function () {
 
     Route::get('/', 'index')->name('settings');
+    Route::patch('/', 'storeSettings')->name('settings.store');
 
     Route::prefix('users')->group(function () {
         Route::get('/', 'usersIndex')->name('settings.users');

@@ -1,3 +1,4 @@
+@php use App\Models\Setting; @endphp
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -12,7 +13,10 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBDILYHSKVyFrSYuy17v2ONnu1KlQNFOA&libraries=places&callback=initAutocomplete" async></script>
+    <script
+        src="{{ 'https://maps.googleapis.com/maps/api/js?key=' . Setting::all()->where('name', 'maps_api_key')->first()->value . '&libraries=places&callback=initAutocomplete' }}"
+        async>
+    </script>
     <form method="post" action="{{ route('customer.update', $customer->id) }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
@@ -70,27 +74,29 @@
                 @enderror
             </div>
         </div>
-        <script>
-            let autocomplete;
+        @if( Setting::all()->where('name', 'maps_api_key')->first()->value != null )
+            <script>
+                let autocomplete;
 
-            /* ------------------------- Initialize Autocomplete ------------------------ */
-            function initAutocomplete() {
-                const input = document.getElementById("address");
-                const options = {
-                    componentRestrictions: { country: "FR" }
+                /* ------------------------- Initialize Autocomplete ------------------------ */
+                function initAutocomplete() {
+                    const input = document.getElementById("address");
+                    const options = {
+                        componentRestrictions: {country: "FR"}
+                    }
+                    autocomplete = new google.maps.places.Autocomplete(input, options);
+                    autocomplete.addListener("place_changed", onPlaceChange)
                 }
-                autocomplete = new google.maps.places.Autocomplete(input, options);
-                autocomplete.addListener("place_changed", onPlaceChange)
-            }
 
-            /* --------------------------- Handle Place Change -------------------------- */
-            function onPlaceChange() {
-                const place = autocomplete.getPlace();
-                console.log(place.formatted_address)
-                console.log(place.geometry.location.lat())
-                console.log(place.geometry.location.lng())
-            }
-        </script>
+                /* --------------------------- Handle Place Change -------------------------- */
+                function onPlaceChange() {
+                    const place = autocomplete.getPlace();
+                    console.log(place.formatted_address)
+                    console.log(place.geometry.location.lat())
+                    console.log(place.geometry.location.lng())
+                }
+            </script>
+        @endif
 
         <br/>
 
