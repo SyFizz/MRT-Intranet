@@ -16,6 +16,7 @@ class UserUpdateRequest extends FormRequest
         return true;
     }
 
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,7 +26,7 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => ['required','string','email','max:255',Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => ['required','string','email','max:255',Rule::unique(User::class)->ignore(User::find($this->id))],
             'isAdmin' => 'required|max:3|min:3|in:Oui,Non',
         ];
     }

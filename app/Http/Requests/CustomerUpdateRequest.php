@@ -22,9 +22,9 @@ class CustomerUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\s]+$/',
+            'name' => 'required|min:3|max:255|regex:/^[a-zA-ZéèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ.\s]+$/',
             'email' => 'required|email',
-            'address' => 'required|min:3|max:255|regex:/^[a-zA-Z0-9éèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ\'\-,\s]+$/',
+            'address' => 'required|min:3|max:255|regex:/^[a-zA-Z0-9éèêëàâäôöûüïîçÉÈÊËÀÂÄÔÖÛÜÏÎÇ.\'\-,\s]+$/',
             'phone' => 'required|phone:FR,INTERNATIONAL',
             'vat_number' => 'nullable|min:13|max:13|regex:/^[a-zA-Z]{2}[0-9]{11}$/',
             'siret' => 'nullable|min:14|max:14|regex:/^[0-9]{14}$/',

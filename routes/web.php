@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +33,7 @@ Route::prefix('customers')->middleware(['auth', 'verified'])->controller(Custome
     Route::get('/{id}', 'show')->name('customers.show');
     Route::get('/{id}/edit', 'edit')->name('customers.edit');
     Route::patch('/{id}', 'update')->name('customer.update');
-    Route::delete('/{id}', 'destroy')->name('customer.destroy');
+    Route::delete('/{id}', 'destroy')->middleware('auth.admin')->name('customer.destroy');
 });
 
 
@@ -42,12 +43,12 @@ Route::get('/customers/{id}/add-invoice', [InvoiceController::class, 'upload'])-
 Route::prefix('invoice')->middleware(['auth', 'verified'])->controller(InvoiceController::class)->group(function () {
     Route::get('{id}', 'show')->name('invoice.show');
     Route::get('{id}/download', 'download')->name('invoice.download');
-    Route::delete('{id}', 'destroy')->name('invoice.destroy');
+    Route::delete('{id}', 'destroy')->middleware('auth.admin')->name('invoice.destroy');
 });
 
 
 //Group all settings routes
-Route::prefix('settings')->middleware(['auth', 'verified'])->controller(SettingsController::class)->group(function () {
+Route::middleware(['auth', 'verified', 'auth.admin'])->prefix('settings')->controller(SettingsController::class)->group(function () {
 
     Route::get('/', 'index')->name('settings');
 

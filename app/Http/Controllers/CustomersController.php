@@ -39,8 +39,15 @@ class CustomersController extends Controller
         return view('customers.index')->with('customers' , $customers)->with('search', $request->search);
     }
 
-    public function show(int $id): View
+    public function show($id)
     {
+        //if $id is not a number, redirect to customers.index
+        if(!is_numeric($id)){
+            return to_route('customers')->with('error', 'Le numéro de client doit être un nombre entier.');
+}
+        if (Customer::all()->find($id) == null){
+            return to_route('customers')->with('error', 'Le client n°' . $id . ' n\'existe pas.');
+        }
         return view('customers.show')->with('customer', Customer::all()->find($id));
     }
     public function edit(int $id): View
@@ -97,6 +104,10 @@ class CustomersController extends Controller
 
     public function destroy(int $id): RedirectResponse
     {
+
+        if(!Customer::all()->find($id)) {
+            return to_route('customers')->with('error', 'Le client n°' . $id . ' n\'existe pas.');
+        }
         $customer = Customer::all()->find($id);
         $invoices = $customer->invoices;
         /** @var Invoice $invoice */
@@ -105,6 +116,6 @@ class CustomersController extends Controller
         }
         $customer->delete();
 
-        return to_route('customers');
+        return to_route('customers')->with('success', 'Le client n°' . $id . ' a bien été supprimé.');
     }
 }
